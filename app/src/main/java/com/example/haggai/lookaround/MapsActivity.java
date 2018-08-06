@@ -75,6 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         if ( ContextCompat.checkSelfPermission( MapsActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
                             mMap.setMyLocationEnabled(true);
                         }
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 10.0f));
                     }
 
                     @Override
