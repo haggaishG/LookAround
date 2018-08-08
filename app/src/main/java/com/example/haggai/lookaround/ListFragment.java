@@ -7,7 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +52,19 @@ public class ListFragment extends Fragment {
 
         @Override
         public PocViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = new TextView(parent.getContext());
+            LayoutInflater li = LayoutInflater.from(parent.getContext());
+            View view = li.inflate(R.layout.list_item_layout, null);
+
             PocViewHolder viewHolder = new PocViewHolder(view);
             return viewHolder;
         }
 
         @Override
         public void onBindViewHolder(PocViewHolder holder, int position) {
-            holder.textView.setText(dataSource.get(position).getName());
+            PointOfInterest poi = dataSource.get(position);
+            holder.poiName.setText(poi.getName());
+            holder.poiMarker.setVisibility(poi.isSelectedForDisplay() ? View.VISIBLE : View.INVISIBLE);
+            Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(holder.poiPicture);
         }
 
         @Override
@@ -72,10 +80,15 @@ public class ListFragment extends Fragment {
      * A Simple ViewHolder for the RecyclerView
      */
     public static class PocViewHolder extends RecyclerView.ViewHolder{
-        public TextView textView;
+        public ImageView  poiPicture;
+        public TextView poiName ;
+        public ImageView poiMarker ;
+
         public PocViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView;
+            poiPicture = (ImageView)itemView.findViewById(R.id.poi_picture) ;
+            poiMarker = (ImageView)itemView.findViewById(R.id.poi_marker) ;
+            poiName = (TextView) itemView.findViewById(R.id.poi_name) ;
         }
     }
 }
