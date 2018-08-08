@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.daimajia.swipe.SwipeLayout;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
 
@@ -61,8 +63,8 @@ public class ListFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(PocViewHolder holder, int position) {
-            PointOfInterest poi = dataSource.get(position);
+        public void onBindViewHolder(final PocViewHolder holder, final int position) {
+            final PointOfInterest poi = dataSource.get(position);
             holder.poiName.setText(poi.getName());
             holder.poiMarker.setVisibility(poi.isSelectedForDisplay() ? View.VISIBLE : View.INVISIBLE);
             String imageUrl = "https://maps.googleapis.com/maps/api/place/photo?";
@@ -74,6 +76,23 @@ public class ListFragment extends Fragment {
             RequestCreator reCr = Picasso.get().load(imageUrl) ;
             reCr.placeholder(R.drawable.no_image_paceholder);
             reCr.into(holder.poiPicture);
+
+            holder.markImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    poi.setSelectedForDisplay(!poi.isSelectedForDisplay());
+                    holder.poiMarker.setVisibility(poi.isSelectedForDisplay() ? View.VISIBLE : View.INVISIBLE);
+                    holder.swipeLayout.close();
+                }
+            });
+
+            holder.trashImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    list.remove(poi);
+                    listAdapter.notifyDataSetChanged();
+                }
+            });
         }
 
         @Override
@@ -92,12 +111,19 @@ public class ListFragment extends Fragment {
         public ImageView  poiPicture;
         public TextView poiName ;
         public ImageView poiMarker ;
+        public ImageButton trashImageButton ;
+        public ImageButton markImageButton ;
+        public SwipeLayout swipeLayout ;
 
         public PocViewHolder(View itemView) {
             super(itemView);
+            swipeLayout = (SwipeLayout)itemView;
+            swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
             poiPicture = (ImageView)itemView.findViewById(R.id.poi_picture) ;
             poiMarker = (ImageView)itemView.findViewById(R.id.poi_marker) ;
             poiName = (TextView) itemView.findViewById(R.id.poi_name) ;
+            trashImageButton = (ImageButton) itemView.findViewById(R.id.trash_image_button) ;
+            markImageButton = (ImageButton) itemView.findViewById(R.id.marker_image_button) ;
         }
     }
 }

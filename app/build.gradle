@@ -19,6 +19,9 @@ android {
 }
 
 dependencies {
+
+    implementation 'com.android.support:support-v4:20.+'
+    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.android.support:recyclerview-v7:27.1.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
