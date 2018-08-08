@@ -25,16 +25,19 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener {
 
     public final int PERMISSION_ACCESS_LOCATION = 33 ; //arbitrary
+    public final int MAP_PAGE = 0 ; //arbitrary
+    public final int LIST_PAGE = 1 ; //arbitrary
     private GoogleMap mMap;
     protected List<PointOfInterest> pointsList;
 
     protected SupportMapFragment mapFragment = null ;
+    protected ListFragment listFragment = null ;
 
 
     /**
      * The number of pages (wizard steps) to show in this demo.
      */
-    private static final int NUM_PAGES = 1;
+    private static final int NUM_PAGES = 2;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -87,7 +90,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             protected void onPostExecute(List<PointOfInterest> result) {
                 super.onPostExecute(result);
-                MainActivity.this.pointsList = result;            }
+                MainActivity.this.pointsList = result;
+                MainActivity.this.listFragment.setList(result);
+                MainActivity.this.mPager.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        MainActivity.this.mPager.setCurrentItem(LIST_PAGE);
+                    }
+                }, 100);
+            }
         };
         reader.execute(queryUrl);
     }
@@ -129,11 +140,21 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         public Fragment getItem(int position) {
-            if(mapFragment == null){
-                mapFragment = new SupportMapFragment();
-                mapFragment.getMapAsync(MainActivity.this);
+            switch(position) {
+                case MAP_PAGE:
+                    if (mapFragment == null) {
+                        mapFragment = new SupportMapFragment();
+                        mapFragment.getMapAsync(MainActivity.this);
+                    }
+                    return mapFragment;
+                case LIST_PAGE:
+                default:
+                    if(listFragment == null){
+                        listFragment = new ListFragment();
+                        listFragment.setList(MainActivity.this.pointsList);
+                    }
+                    return listFragment ;
             }
-            return mapFragment;
         }
 
         @Override
