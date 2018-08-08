@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,7 +65,15 @@ public class ListFragment extends Fragment {
             PointOfInterest poi = dataSource.get(position);
             holder.poiName.setText(poi.getName());
             holder.poiMarker.setVisibility(poi.isSelectedForDisplay() ? View.VISIBLE : View.INVISIBLE);
-            Picasso.get().load("http://i.imgur.com/DvpvklR.png").into(holder.poiPicture);
+            String imageUrl = "https://maps.googleapis.com/maps/api/place/photo?";
+            imageUrl += "key="+getActivity().getString(R.string.google_maps_key) + "&";
+            imageUrl += "photoreference="+poi.getPhotoReference() + "&";
+            imageUrl += "maxwidth="+holder.poiPicture.getWidth() + "&";
+            imageUrl += "maxheight="+holder.poiPicture.getHeight();
+
+            RequestCreator reCr = Picasso.get().load(imageUrl) ;
+            reCr.placeholder(R.drawable.no_image_paceholder);
+            reCr.into(holder.poiPicture);
         }
 
         @Override
