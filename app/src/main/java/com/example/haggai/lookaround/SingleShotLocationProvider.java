@@ -18,9 +18,7 @@ public class SingleShotLocationProvider {
         public void error(String err);
     }
 
-    // calls back to calling thread, note this is for low grain: if you want higher precision, swap the
-    // contents of the else and if. Also be sure to check gps permission/settings are allowed.
-    // call usually takes <10ms
+
     public static void requestSingleUpdate(final Context context, final LocationCallback callback) {
         if (checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED    ) {

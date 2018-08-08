@@ -17,18 +17,7 @@ import java.util.List;
 
 public class JsonReader extends AsyncTask<String, String, List<PointOfInterest>> {
 
-//    @Override
-//    protected void onPreExecute() {
-//        super.onPreExecute();
-//    }
-//    @Override
-//    protected void onPostExecute(String result) {
-//        super.onPostExecute(result);
-//    }
-
     protected List<PointOfInterest> doInBackground(String... params) {
-
-
         HttpURLConnection connection = null;
         BufferedReader reader = null;
 

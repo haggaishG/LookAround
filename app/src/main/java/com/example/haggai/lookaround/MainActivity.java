@@ -30,32 +30,19 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback,GoogleMap.OnMapClickListener {
 
     public final int PERMISSION_ACCESS_LOCATION = 33 ; //arbitrary
-    public final int MAP_PAGE = 0 ; //arbitrary
-    public final int LIST_PAGE = 1 ; //arbitrary
-    private GoogleMap mMap;
-    protected List<PointOfInterest> pointsList;
+    public final int MAP_PAGE = 0 ;
+    public final int LIST_PAGE = 1 ;
+    private static final int NUM_PAGES = 2;
 
+    private TextView tapMessage;
+    private GoogleMap mMap;
+    private ViewPager mPager;
+    private PagerAdapter mPagerAdapter;
+
+    protected List<PointOfInterest> pointsList;
     protected SupportMapFragment mapFragment = null ;
     protected ListFragment listFragment = null ;
 
-
-    /**
-     * The number of pages (wizard steps) to show in this demo.
-     */
-    private static final int NUM_PAGES = 2;
-
-    /**
-     * The pager widget, which handles animation and allows swiping horizontally to access previous
-     * and next wizard steps.
-     */
-    private ViewPager mPager;
-
-    private TextView tapMessage;
-
-    /**
-     * The pager adapter, which provides the pages to the view pager widget.
-     */
-    private PagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +53,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_LOCATION);
         }
-        // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
@@ -100,11 +86,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
-            // If the user is currently looking at the first step, allow the system to handle the
-            // Back button. This calls finish() on this activity and pops the back stack.
             super.onBackPressed();
         } else {
-            // Otherwise, select the previous step.
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
@@ -112,12 +95,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapClick(LatLng position)
     {
-        Log.i("onMapClick", "Horray!");
+        tapMessage.setVisibility(View.GONE);
 
-        String key = "AIzaSyDfik3ovAz5-61v2h9lVLgkQZoaq5HguhU" ; //getString(R.string.google_maps_key) ;
+        String key = getString(R.string.google_maps_key) ;
         String geoPoint = position.latitude+","+position.longitude ;
         String queryUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + geoPoint+ "&rankby=distance&" + "key="+key ;
-        tapMessage.setVisibility(View.GONE);
         JsonReader reader = new JsonReader(){
             @Override
             protected void onPostExecute(List<PointOfInterest> result) {
@@ -143,9 +125,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SingleShotLocationProvider.requestSingleUpdate(this,
                 new SingleShotLocationProvider.LocationCallback() {
                     @Override public void onNewLocationAvailable(double lat, double lon) {
-                        // Add a marker in Sydney and move the camera
                         LatLng center = new LatLng(lat, lon);
-                        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(center));
                         if ( ContextCompat.checkSelfPermission( MainActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) == PackageManager.PERMISSION_GRANTED ) {
                             mMap.setMyLocationEnabled(true);
@@ -161,10 +141,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
 
         public ScreenSlidePagerAdapter(FragmentManager fm) {

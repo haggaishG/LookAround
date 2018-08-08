@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ListFragment extends Fragment {
-//    String[] strings = {"1", "2", "3", "4", "5", "6", "7"};
 
     private List<PointOfInterest> list = new ArrayList<PointOfInterest>() ; // just in case ...
-    private PocListAdapter listAdapter = new PocListAdapter(list) ; ;
+    private PoiListAdapter listAdapter = new PoiListAdapter(list) ; ;
 
     public ListFragment() {}
 
@@ -39,13 +38,10 @@ public class ListFragment extends Fragment {
         return rv;
     }
 
-    /**
-     * A Simple Adapter for the RecyclerView
-     */
-    public class PocListAdapter extends RecyclerView.Adapter<PocViewHolder> {
+    public class PoiListAdapter extends RecyclerView.Adapter<PocViewHolder> {
         private List<PointOfInterest> dataSource;
 
-        public PocListAdapter(List<PointOfInterest> dataArgs){
+        public PoiListAdapter(List<PointOfInterest> dataArgs){
             dataSource = dataArgs;
         }
 
